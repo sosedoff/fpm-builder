@@ -33,3 +33,4 @@ Your system is ready for building packages.
 
 - node.js v0.6.18
 - redis v2.4.14
+- nginx v1.0.15
