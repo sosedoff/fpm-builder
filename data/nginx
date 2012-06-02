@@ -1,0 +1,43 @@
+#!/bin/bash
+
+NAME="nginx"
+DESC="HTTP and reverse proxy server."
+VERSION="1.0.15"
+DIR="/tmp/fpm-build/$NAME-$VERSION"
+INSTALL_DIR="$DIR/install"
+
+if [ ! -d "$INSTALL_DIR" ]; then
+  echo "Building..."
+  mkdir -p $DIR
+  cd $DIR
+  wget "http://nginx.org/download/nginx-$VERSION.tar.gz"
+  wget "ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.30.tar.gz"
+  wget "http://zlib.net/zlib-1.2.7.tar.gz"
+  wget "http://www.openssl.org/source/openssl-1.0.1c.tar.gz"
+  tar -zxf nginx-$VERSION.tar.gz
+  tar -zxf pcre-8.30.tar.gz
+  tar -zxf zlib-1.2.7.tar.gz
+  tar -zxf openssl-1.0.1c.tar.gz
+  cd nginx-$VERSION
+  ./configure --prefix=/usr/local \
+              --with-http_gzip_static_module \
+              --with-http_ssl_module \
+              --with-http_stub_status_module \
+              --with-zlib=../zlib-1.2.7 \
+              --with-pcre=../pcre-8.30 \
+              --with-openssl=../openssl-1.0.1c
+
+  make
+  make install DESTDIR=$INSTALL_DIR
+fi
+
+if [ -d "$INSTALL_DIR" ]; then
+  echo "Build dir exists, making package..."
+  cd $INSTALL_DIR
+  fpm -s dir \
+      -t deb \
+      --name "$NAME" \
+      --description "$DESC" \
+      --version $VERSION \
+      usr/local/nginx
+fi
