@@ -1,0 +1,30 @@
+#!/bin/bash
+
+NAME="redis"
+DESC="Redis is an open source, advanced key-value store."
+VERSION="2.4.14"
+DIR="/tmp/fpm-build/$NAME-$VERSION"
+INSTALL_DIR="$DIR/install"
+
+if [ ! -d "$INSTALL_DIR" ]; then
+  echo "Building..."
+  mkdir -p $DIR
+  cd $DIR
+  wget http://redis.googlecode.com/files/redis-2.4.14.tar.gz
+  tar -zxf redis-2.4.14.tar.gz
+  cd redis-2.4.14
+  make
+  mkdir -p $INSTALL_DIR/usr/bin
+  cp src/redis-{benchmark,check-aof,check-dump,cli,server} $INSTALL_DIR/usr/bin
+fi
+
+if [ -d "$INSTALL_DIR" ]; then
+  echo "Build dir exists, making package..."
+  cd $INSTALL_DIR
+  fpm -s dir \
+      -t deb \
+      --name "$NAME" \
+      --description "$DESC" \
+      --version $VERSION \
+      usr/bin
+fi

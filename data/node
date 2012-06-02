@@ -1,0 +1,32 @@
+#!/bin/bash
+
+NAME="node"
+DESC="Evented I/O for V8 javascript."
+VERSION="0.6.18"
+DIR="/tmp/fpm-build/$NAME-$VERSION"
+INSTALL_DIR="$DIR/install"
+
+if [ ! -d "$INSTALL_DIR" ]; then
+  echo "Building..."
+  mkdir -p $DIR
+  cd $DIR
+  wget http://nodejs.org/dist/v0.6.18/node-v0.6.18.tar.gz
+  tar -zxf node-v0.6.18.tar.gz
+  cd node-v0.6.18
+  ./configure --prefix=/usr
+  make
+  make install DESTDIR=$INSTALL_DIR
+fi
+
+if [ -d "$INSTALL_DIR" ]; then
+  echo "Build dir exists, making package..."
+  cd $INSTALL_DIR
+  fpm -s dir \
+      -t deb \
+      --name "$NAME" \
+      --description "$DESC" \
+      --version $VERSION \
+      --depends "libssl0.9.8 (>=0)" \
+      --depends "libstdc++6 (>= 4.4.3)" \
+      usr/bin usr/lib
+fi
