@@ -26,6 +26,6 @@ if [ -d "$INSTALL_DIR" ]; then
       --name "$NAME" \
       --description "$DESC" \
       --version $VERSION \
-      --depends "libssl0.9.8 (>=0)" \
+      --depends "curl (>=0)" \
       usr
 fi
