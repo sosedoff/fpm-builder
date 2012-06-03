@@ -15,7 +15,14 @@ thing you have to install all required packages and build tools.
 
 ```bash
 apt-get -y update && apt-get -y upgrade
-apt-get install -y build-essential autoconf libssl-dev curl libcurl4-gnutls-dev zlib1g zlib1g-dev libxml2 libxml2-dev libxslt-dev libreadline5-dev libyaml-dev
+apt-get install -y build-essential \
+                   autoconf \
+                   libssl-dev \
+                   curl libcurl4-gnutls-dev \
+                   zlib1g zlib1g-dev \
+                   libxml2 libxml2-dev libxslt-dev \
+                   libreadline5-dev libyaml-dev \
+                   gettext
 ```
 
 Install ruby and fpm:
@@ -34,3 +41,4 @@ Your system is ready for building packages.
 - node.js v0.6.18
 - redis v2.4.14
 - nginx v1.0.15
+- git v1.7.10.3
