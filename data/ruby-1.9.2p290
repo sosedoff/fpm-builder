@@ -1,0 +1,36 @@
+#!/bin/bash
+
+NAME="ruby-1.9.2p290"
+DESC="Ruby 1.9.2p290"
+VERSION="1.9.2p290"
+DIR="/tmp/fpm-build/$NAME-$VERSION"
+INSTALL_DIR="$DIR/install"
+
+if [ ! -d "$INSTALL_DIR" ]; then
+  echo "Building..."
+  mkdir -p $DIR
+  cd $DIR
+  wget wget http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.2-p290.tar.gz
+  tar -zxf ruby-1.9.2-p290.tar.gz
+  cd ruby-1.9.2-p290
+  ./configure --prefix=/usr --enable-shared
+  make
+  make install DESTDIR=$INSTALL_DIR
+fi
+
+if [ -d "$INSTALL_DIR" ]; then
+  echo "Build dir exists, making package..."
+  cd $INSTALL_DIR
+  fpm -s dir \
+      -t deb \
+      --name "$NAME" \
+      --description "$DESC" \
+      --version $VERSION \
+      --depends "curl (>=0)" \
+      --depends "libssl0.9.8 (>=0)" \
+      --depends "libreadline5-dev (>= 5.2)" \
+      --depends "libxml2-dev (>= 2.7)" \
+      --depends "zlib1g-dev (>= 1.2.3)" \
+      --depends "libyaml-dev (>= 0.1.3)" \
+      user
+fi
