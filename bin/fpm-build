@@ -1,0 +1,35 @@
+#!/usr/bin/env ruby
+require 'optparse'
+
+options = {}
+
+optparse = OptionParser.new do |opts|
+  opts.on('-h', '--help', 'Display this information.') do
+    puts(opts)
+    exit
+  end
+
+  opts.on('-n', '--name NAME', 'Formula name') do |name|
+    path = File.join(File.dirname(__FILE__), '../data', name)
+    if File.exists?(path)
+      options[:formula] = path
+    else
+      STDERR.puts "File does not exist: #{path}"
+      exit(1)
+    end
+  end
+
+  opts.on('--package PATH', 'Package save path') do |path|
+    options[:package_path] = File.expand_path(path)
+  end
+
+  opts.on('--path PATH', 'Build path') do |path|
+    options[:build_path] = File.expand_path(path)
+  end
+end
+
+begin
+  optparse.parse!
+rescue 
+  # TODO
+end
